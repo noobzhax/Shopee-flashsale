@@ -20,8 +20,7 @@ def executeScript(**params):
 
     for cookie in session:
         if 'sameSite' in cookie:
-            if cookie['sameSite'] == 'None' or 'unspecified':
-                cookie['sameSite'] = 'Strict'
+            cookie['sameSite'] = 'Strict'
         driver.add_cookie(cookie)
 
     'btn btn-solid-primary btn--l btn-solid-primary--disabled rvHxix' # Buy button disabled
@@ -31,7 +30,9 @@ def executeScript(**params):
     clearConsole()
     #  Check acc
     while True:
-        spinner = MoonSpinner(Fore.LIGHTYELLOW_EX + 'Loading page, if you stay here too long please refresh the page or stop to change session account')
+        spinner = MoonSpinner(
+            f'{Fore.LIGHTYELLOW_EX}Loading page, if you stay here too long please refresh the page or stop to change session account'
+        )
         htmlsource = driver.page_source
         if 'navbar__username' in htmlsource:
             break
@@ -39,7 +40,9 @@ def executeScript(**params):
             spinner.next()
 
     while True:
-        spinner = MoonSpinner(Fore.GREEN + 'Waiting For FlashSale.. Please select all available types on web ')
+        spinner = MoonSpinner(
+            f'{Fore.GREEN}Waiting For FlashSale.. Please select all available types on web '
+        )
         htmlsource = driver.page_source
         if 'berakhir dalam' in htmlsource or 'ends in' in htmlsource:
             print(Fore.BLUE + '\n\n\n  [ FlashSale Started. ]\n\n')
@@ -55,7 +58,7 @@ def executeScript(**params):
 
         # if params['autoCheckout']:
         while True:
-            spinner = MoonSpinner(Fore.GREEN + 'Waiting For CheckOut Button ')
+            spinner = MoonSpinner(f'{Fore.GREEN}Waiting For CheckOut Button ')
             htmlsource = driver.page_source
             if 'class="shopee-button-solid shopee-button-solid--primary"' in htmlsource:
                 print(Fore.BLUE + '\n\n\n  [ Success CheckOut ✔️ ]\n\n')
@@ -68,8 +71,8 @@ def executeScript(**params):
     except:
         print(Fore.RED + '\n\n\n  [ we have an error, maybe the item has been sold out ]\n\n')
         print(traceback.format_exc())
-    
-    input(Fore.GREEN + '[ Press Anykey To Exit This Script ]' + Style.RESET_ALL)
+
+    input(f'{Fore.GREEN}[ Press Anykey To Exit This Script ]{Style.RESET_ALL}')
     print(Fore.WHITE + '\n\nBye 👋' + Style.RESET_ALL)
 
         

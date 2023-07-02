@@ -1,16 +1,12 @@
 import importlib.util, sys, subprocess, json, os
 
 def clearConsole():
-    command = 'clear'
-    if os.name in ('nt', 'dos'):  # If Machine is running on Windows, use cls
-        command = 'cls'
+    command = 'cls' if os.name in {'nt', 'dos'} else 'clear'
     os.system(command)
 
 def readFileJson(file):
-    f = open(file, 'r')
-    data = json.loads(f.read())
-    f.close()
-
+    with open(file, 'r') as f:
+        data = json.loads(f.read())
     return data
 
 def writeFileJson(obj, file):
