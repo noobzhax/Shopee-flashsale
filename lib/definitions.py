@@ -11,19 +11,15 @@ def initProgram():
     print(title)
 
 def clearConsole():
-    command = 'clear'
-    if os.name in ('nt', 'dos'):  # If Machine is running on Windows, use cls
-        command = 'cls'
+    command = 'cls' if os.name in {'nt', 'dos'} else 'clear'
     os.system(command)
 
 def readDir(path):
     return os.listdir(path)
 
 def readFileJson(file):
-    f = open(file, 'r')
-    data = json.loads(f.read())
-    f.close()
-
+    with open(file, 'r') as f:
+        data = json.loads(f.read())
     return data
 
 def writeFileJson(obj, file):
@@ -39,10 +35,10 @@ def headerOutput(autoCheckout, autoOrder, chromedriver, session, urlTarget, opti
 '''
     if not justTitle:
         string += f'''
-{Fore.GREEN}Gunakan Platfrom        :{Style.RESET_ALL} {(Fore.BLUE + platform.system() + Style.RESET_ALL)}
-{Fore.GREEN}Cookie File    :{Style.RESET_ALL} {(Fore.BLUE + session + Style.RESET_ALL) if session not in [None, ''] else (Fore.YELLOW + '[Masukan Cookie Mu]' + Style.RESET_ALL)}
-{Fore.GREEN}Link Shopee Item :{Style.RESET_ALL} {(Fore.BLUE + urlTarget + Style.RESET_ALL) if urlTarget not in [None, ''] else (Fore.YELLOW + '[Masukkan URL Flashsale Shopee]' + Style.RESET_ALL)}
-{Fore.GREEN}ChromeDriver    :{Style.RESET_ALL} {(Fore.BLUE + chromedriver + Style.RESET_ALL) if chromedriver not in [None, ''] else (Fore.YELLOW + '[Select Chromedriver]' + Style.RESET_ALL)}
+{Fore.GREEN}Gunakan Platfrom        :{Style.RESET_ALL} {Fore.BLUE + platform.system() + Style.RESET_ALL}
+{Fore.GREEN}Cookie File    :{Style.RESET_ALL} {Fore.BLUE + session + Style.RESET_ALL if session not in [None, ''] else f'{Fore.YELLOW}[Masukan Cookie Mu]{Style.RESET_ALL}'}
+{Fore.GREEN}Link Shopee Item :{Style.RESET_ALL} {Fore.BLUE + urlTarget + Style.RESET_ALL if urlTarget not in [None, ''] else f'{Fore.YELLOW}[Masukkan URL Flashsale Shopee]{Style.RESET_ALL}'}
+{Fore.GREEN}ChromeDriver    :{Style.RESET_ALL} {Fore.BLUE + chromedriver + Style.RESET_ALL if chromedriver not in [None, ''] else f'{Fore.YELLOW}[Select Chromedriver]{Style.RESET_ALL}'}
 {Fore.GREEN}Auto Checkout   :{Style.RESET_ALL} {'✔️' if autoCheckout else '❌'}
 {Fore.GREEN}Auto Order      :{Style.RESET_ALL} {'✔️' if autoOrder else '❌'} {Fore.LIGHTRED_EX}[Vitur Belum Tersedia]
 '''
@@ -50,8 +46,8 @@ def headerOutput(autoCheckout, autoOrder, chromedriver, session, urlTarget, opti
             string += f'{Fore.LIGHTBLACK_EX}#  [ Silakan Pilih ]  #\n'
             for i in range(len(options)):
                 string += f'''
-{Fore.GREEN + options[i][0]} :{Style.RESET_ALL} {(Fore.BLUE + options[i][1] + Style.RESET_ALL) if options[i][1] not in [None, ''] else (Fore.YELLOW + '-' + Style.RESET_ALL)}'''
-    
+{Fore.GREEN + options[i][0]} :{Style.RESET_ALL} {Fore.BLUE + options[i][1] + Style.RESET_ALL if options[i][1] not in [None, ''] else f'{Fore.YELLOW}-{Style.RESET_ALL}'}'''
+
     return string
 
 def checkChromeDriver():
@@ -59,7 +55,7 @@ def checkChromeDriver():
     chromeDriver = settings['chromedriver']
     chromeDir = readDir('./webdriver')
     _platform = platform.system()
-    
+
     print('[🏁] Cek ChromeDriver...\n')
     time.sleep(1)
     print(f'{Fore.BLUE}Kamu Menggunakan platform dari {_platform}')
@@ -79,22 +75,18 @@ def checkChromeDriver():
         driverURL = driverURL[answers['version']][_platform]
         zipName = driverURL.split('/')[-1]
 
-        zipPath = './webdriver/' + zipName
+        zipPath = f'./webdriver/{zipName}'
         wget.download(driverURL, out=zipPath)
 
         with ZipFile(zipPath, 'r') as zip_ref:
             zip_ref.extractall(path='webdriver/',)
-            
+
         os.remove(zipPath)
 
         print(Fore.WHITE + '\nTerinstall ✔️')
 
-        if _platform == 'Windows':
-            platform_ext = '.exe'
-        else:
-            platform_ext = ''
-
-        settings['chromedriver'] = './webdriver/chromedriver' + platform_ext
+        platform_ext = '.exe' if _platform == 'Windows' else ''
+        settings['chromedriver'] = f'./webdriver/chromedriver{platform_ext}'
 
         writeFileJson(settings, './config/index.json')
 
@@ -122,7 +114,7 @@ def menu():
     elif '3' in choice:
         reset_settings()
     elif '4' in choice:
-        print(Fore.WHITE + 'Sampai Jumpa Di Lain Waktu 👋' + Style.RESET_ALL)
+        print(f'{Fore.WHITE}Sampai Jumpa Di Lain Waktu 👋{Style.RESET_ALL}')
 
 def menu_options():
     initProgram()
@@ -149,14 +141,12 @@ def menu_options():
 def reset_settings():
     answer = inquirer.prompt([inquirer.Confirm('check', message='Apakah Anda yakin untuk mengatur ulang pengaturan?')])
     settings = readFileJson('./config/index.json')
-        
+
     if answer['check']:
         settings['session'] = ''
         settings['url'] = ''
         writeFileJson(settings, './config/index.json')
-        menu()
-    else:
-        menu()
+    menu()
 
 def set_url():
     settings = readFileJson('./config/index.json')
@@ -171,18 +161,7 @@ def select_session():
     session = readDir('./sessions')
     settings = readFileJson('./config/index.json')
 
-    session_selector = []
-    for i in session:
-        if '.json' in i:
-            session_selector.append(i)
-
-
-    if len(session_selector) == 0:
-        clearConsole()
-        print(Fore.LIGHTRED_EX + '[ Tidak ada sesi akun, lihat README.md untuk langkah-langkah menambahkan sesi ]\n\n')
-        input(Fore.GREEN + '[Back]' + Style.RESET_ALL)
-        menu()
-    else:
+    if session_selector := [i for i in session if '.json' in i]:
         list_session = [
             inquirer.List('session', message='Select your account session', choices=session_selector)
         ]
@@ -193,7 +172,11 @@ def select_session():
         settings['session'] = choice
         writeFileJson(settings, './config/index.json')
 
-        menu()
+    else:
+        clearConsole()
+        print(Fore.LIGHTRED_EX + '[ Tidak ada sesi akun, lihat README.md untuk langkah-langkah menambahkan sesi ]\n\n')
+        input(f'{Fore.GREEN}[Back]{Style.RESET_ALL}')
+    menu()
 
 def start_countdown():
     settings = readFileJson('./config/index.json')
@@ -201,12 +184,12 @@ def start_countdown():
     if not settings['session']:
         clearConsole()
         print(Fore.LIGHTRED_EX + '[ Tidak ada sesi akun, lihat README.md untuk langkah-langkah menambahkan sesi ]\n\n')
-        input(Fore.GREEN + '[ Back ]' + Style.RESET_ALL)
+        input(f'{Fore.GREEN}[ Back ]{Style.RESET_ALL}')
         menu()
     elif not settings['url']:
         clearConsole()
         print(Fore.LIGHTRED_EX + '[ Please Insert Shopee Flashsale Item URL ]\n\n')
-        input(Fore.GREEN + '[ Back ]' + Style.RESET_ALL)
+        input(f'{Fore.GREEN}[ Back ]{Style.RESET_ALL}')
         menu()
     else:
         settings['platform'] = platform.system()

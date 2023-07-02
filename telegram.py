@@ -52,14 +52,19 @@ def homesdfas(_, query):
     [InlineKeyboardButton(text = '💳 VIP 💳', callback_data = 'homecompra')],
     [InlineKeyboardButton(text = '⚙️ CONTROL PANEL ⚙️', callback_data = 'pannellodiamministrazione')],
     ])
-    query.message.edit(f'**Halo, selamat datang di bot Anda**', reply_markup = start_btn)
+    query.message.edit(
+        '**Halo, selamat datang di bot Anda**', reply_markup=start_btn
+    )
 
 @app.on_callback_query(callback_data_filter("homecompra"))
 def homecompra(_, query):
     back_to_start_btn = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text = '📲 Telegram', callback_data = 'telegramvoip')],
     ])
-    query.message.edit(f'🔎 Pilih layanan yang akan Anda gunakan VoIP', reply_markup = back_to_start_btn)
+    query.message.edit(
+        '🔎 Pilih layanan yang akan Anda gunakan VoIP',
+        reply_markup=back_to_start_btn,
+    )
 
 @app.on_callback_query(callback_data_filter("pannellodiamministrazione"))
 def pannellodiamministrazione(_, query):
@@ -68,13 +73,27 @@ def pannellodiamministrazione(_, query):
                               ('action', 'getBalance'))
     bilancio = float(str(get(url,
                                 params=balance_param).text).split(":")[-1])
-    back_to_start_btn = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text = f'💳 Saldo {bilancio} RUB', callback_data = 'saldo')],
-    [InlineKeyboardButton(text = f'🔝 Website', url = 'https://sms-activate.ru/es/buy')],
-    [InlineKeyboardButton(text = f'👮‍♂️ Admin', callback_data = 'admin')],
-    [InlineKeyboardButton(text = '🏘 Back To Menu 🏘', callback_data = 'home')],
-    ])
-    query.message.edit(f'**⚙️ CONTROL PANEL ⚙️**', reply_markup = back_to_start_btn)
+    back_to_start_btn = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=f'💳 Saldo {bilancio} RUB', callback_data='saldo'
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text='🔝 Website', url='https://sms-activate.ru/es/buy'
+                )
+            ],
+            [InlineKeyboardButton(text='👮‍♂️ Admin', callback_data='admin')],
+            [
+                InlineKeyboardButton(
+                    text='🏘 Back To Menu 🏘', callback_data='home'
+                )
+            ],
+        ]
+    )
+    query.message.edit('**⚙️ CONTROL PANEL ⚙️**', reply_markup = back_to_start_btn)
 
 @app.on_callback_query(callback_data_filter("admin"))
 def admin(_, query):
@@ -95,26 +114,29 @@ def telegramvoip(_, query):
     [InlineKeyboardButton(text = '💲 Costi 💲', url = 'https://telegra.ph/Costi-per-VoIP-01-16')],
     [InlineKeyboardButton(text = '🏘 Back To Menu 🏘', callback_data = 'home')],
     ])
-    query.message.edit(f'🔎 Pilih negara VoIP untuk Telegram', reply_markup = back_to_start_btn)
+    query.message.edit(
+        '🔎 Pilih negara VoIP untuk Telegram', reply_markup=back_to_start_btn
+    )
 
 @app.on_callback_query(callback_data_filter("francia_tg"))
 async def francia_tg(message, query):
     global idnumero
     global idutente
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getNumber&service=tg&ref=1194982&country=78').text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getNumber&service=tg&ref=1194982&country=78'
+    ).text
     if ":" not in response:
         Exception(response)
     number = response.split(':')[2]
     id = response.split(':')[1]
-    pass
     print(f'Pembelian baru dari {query.from_user.id} | {id} | {number}')
     idutente = f'{query.from_user.id}'
     idnumero = f'{id}'
     numero = f'{number}'
     await query.message.edit(text =  f'''**✅ Nomor yang dibeli** | ({id})
 
-☎️ Nomor: +{number} !''') 
+☎️ Nomor: +{number} !''')
     await coppa(query, message)
 
 @app.on_callback_query(callback_data_filter("russia_tg"))
@@ -122,19 +144,20 @@ async def russia_tg(message, query):
     global idnumero
     global idutente
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getNumber&service=tg&ref=1194982&country=0').text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getNumber&service=tg&ref=1194982&country=0'
+    ).text
     if ":" not in response:
         Exception(response)
     number = response.split(':')[2]
     id = response.split(':')[1]
-    pass
     print(f'Pembelian baru dari {query.from_user.id} | {id} | {number}')
     idutente = f'{query.from_user.id}'
     idnumero = f'{id}'
     numero = f'{number}'
     await query.message.edit(text =  f'''**✅ Nomor yang dibeli** | ({id})
 
-☎️ Nomor: +{number} !''') 
+☎️ Nomor: +{number} !''')
     await coppa(query, message)
 
 @app.on_callback_query(callback_data_filter("canada_tg"))
@@ -142,19 +165,20 @@ async def canada_tg(message, query):
     global idnumero
     global idutente
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getNumber&service=tg&ref=1194982&country=36').text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getNumber&service=tg&ref=1194982&country=36'
+    ).text
     if ":" not in response:
         Exception(response)
     number = response.split(':')[2]
     id = response.split(':')[1]
-    pass
     print(f'Pembelian baru dari {query.from_user.id} | {id} | {number}')
     idutente = f'{query.from_user.id}'
     idnumero = f'{id}'
     numero = f'{number}'
     await query.message.edit(text =  f'''**✅ Nomor yang dibeli** | ({id})
 
-☎️ Nomor: +{number} !''') 
+☎️ Nomor: +{number} !''')
     await coppa(query, message)
     
 @app.on_callback_query(callback_data_filter("uk_tg"))
@@ -162,19 +186,20 @@ async def uk_tg(message, query):
     global idnumero
     global idutente
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getNumber&service=tg&ref=1194982&country=12').text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getNumber&service=tg&ref=1194982&country=12'
+    ).text
     if ":" not in response:
         Exception(response)
     number = response.split(':')[2]
     id = response.split(':')[1]
-    pass
     print(f'Pembelian baru dari {query.from_user.id} | {id} | {number}')
     idutente = f'{query.from_user.id}'
     idnumero = f'{id}'
     numero = f'{number}'
     await query.message.edit(text =  f'''**✅ Nomor yang dibeli** | ({id})
 
-☎️ Numero: +{number} !''') 
+☎️ Numero: +{number} !''')
     await coppa(query, message)
 
 @app.on_callback_query(callback_data_filter("usav_tg"))
@@ -182,19 +207,20 @@ async def usav_tg(message, query):
     global idnumero
     global idutente
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getNumber&service=tg&ref=1194982&country=12').text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getNumber&service=tg&ref=1194982&country=12'
+    ).text
     if ":" not in response:
         Exception(response)
     number = response.split(':')[2]
     id = response.split(':')[1]
-    pass
     print(f'Pembelian baru dari {query.from_user.id} | {id} | {number}')
     idutente = f'{query.from_user.id}'
     idnumero = f'{id}'
     numero = f'{number}'
     await query.message.edit(text =  f'''**✅ Nomor yang dibeli** | ({id})
 
-☎️ Numero: +{number} !''') 
+☎️ Numero: +{number} !''')
     await coppa(query, message)
 
 @app.on_callback_query(callback_data_filter("italia_tg"))
@@ -202,19 +228,20 @@ async def italia_tg(message, query):
     global idnumero
     global idutente
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getNumber&service=tg&ref=1194982&country=86').text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getNumber&service=tg&ref=1194982&country=86'
+    ).text
     if ":" not in response:
         Exception(response)
     number = response.split(':')[2]
     id = response.split(':')[1]
-    pass
     print(f'Pembelian baru dari {query.from_user.id} | {id} | {number}')
     idutente = f'{query.from_user.id}'
     idnumero = f'{id}'
     numero = f'{number}'
     await query.message.edit(text =  f'''**✅ Nomor yang dibeli** | ({id})
 
-☎️ Numero: +{number} !''') 
+☎️ Numero: +{number} !''')
     await coppa(query, message)
 
 
@@ -223,19 +250,20 @@ async def indonesia_tg(message, query):
     global idnumero
     global idutente
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getNumber&service=tg&ref=1194982&country=6').text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getNumber&service=tg&ref=1194982&country=6'
+    ).text
     if ":" not in response:
         Exception(response)
     number = response.split(':')[2]
     id = response.split(':')[1]
-    pass
     print(f'Pembelian baru dari {query.from_user.id} | {id} | {number}')
     idutente = f'{query.from_user.id}'
     idnumero = f'{id}'
     numero = f'{number}'
     await query.message.edit(text =  f'''**✅ Nomor yang dibeli** | ({id})
 
-☎️ Numero: +{number} !''') 
+☎️ Numero: +{number} !''')
     await coppa(query, message)
 
 @app.on_callback_query(callback_data_filter("romania_tg"))
@@ -243,19 +271,20 @@ async def romania_tg(message, query):
     global idnumero
     global idutente
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getNumber&service=tg&ref=1194982&country=32').text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getNumber&service=tg&ref=1194982&country=32'
+    ).text
     if ":" not in response:
         Exception(response)
     number = response.split(':')[2]
     id = response.split(':')[1]
-    pass
     print(f'Pembelian baru dari {query.from_user.id} | {id} | {number}')
     idutente = f'{query.from_user.id}'
     idnumero = f'{id}'
     numero = f'{number}'
     await query.message.edit(text =  f'''**✅ Nomor yang dibeli** | ({id})
 
-☎️ Numero: +{number} !''') 
+☎️ Numero: +{number} !''')
     await coppa(query, message)
 
 @app.on_callback_query(callback_data_filter("ghana_tg"))
@@ -263,19 +292,20 @@ async def ghana_tg(message, query):
     global idnumero
     global idutente
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getNumber&service=tg&ref=1194982&country=38').text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getNumber&service=tg&ref=1194982&country=38'
+    ).text
     if ":" not in response:
         Exception(response)
     number = response.split(':')[2]
     id = response.split(':')[1]
-    pass
     print(f'Pembelian baru dari {query.from_user.id} | {id} | {number}')
     idutente = f'{query.from_user.id}'
     idnumero = f'{id}'
     numero = f'{number}'
     await query.message.edit(text =  f'''**✅ Nomor yang dibeli** | ({id})
 
-☎️ Numero: +{number} !''') 
+☎️ Numero: +{number} !''')
     await coppa(query, message)
 
 @app.on_callback_query(callback_data_filter("costa_tg"))
@@ -283,48 +313,53 @@ async def costa_tg(message, query):
     global idnumero
     global idutente
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getNumber&service=tg&ref=1194982&country=27').text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getNumber&service=tg&ref=1194982&country=27'
+    ).text
     if ":" not in response:
         Exception(response)
     number = response.split(':')[2]
     id = response.split(':')[1]
-    pass
     print(f'Pembelian baru dari {query.from_user.id} | {id} | {number}')
     idutente = f'{query.from_user.id}'
     idnumero = f'{id}'
     numero = f'{number}'
     await query.message.edit(text =  f'''**✅ Nomor yang dibeli** | ({id})
 
-☎️ Numero: +{number} !''') 
+☎️ Numero: +{number} !''')
     await coppa(query, message)
 
 async def coppa(query, message):
-        global idnumero
-        global idutente
-        print('Processo coppa startato')
-        requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=setStatus&status=1&id=' + idnumero)
-        tries = 0
-        while tries < 50:
-            time.sleep(3)
-            res = await get_code(query, message)
-            if res is not False:
-                done()
-                print(f'doneeee ({idnumero})')
-                return res
-            tries += 1
-        banned()
-        query.message.edit(text = f'''**❌ Nessun codice ricevuto** | ({idnumero})
+    global idnumero
+    global idutente
+    print('Processo coppa startato')
+    requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=setStatus&status=1&id={idnumero}'
+    )
+    tries = 0
+    while tries < 50:
+        time.sleep(3)
+        res = await get_code(query, message)
+        if res is not False:
+            done()
+            print(f'doneeee ({idnumero})')
+            return res
+        tries += 1
+    banned()
+    query.message.edit(text = f'''**❌ Nessun codice ricevuto** | ({idnumero})
 
 ☎️ Numero: {numero}
-__ℹ️ Anda telah melampaui batas waktu [150 secondi], il VoIP è stato revocato e il saldo è stato riaggiunto__''') 
-        return False 
+__ℹ️ Anda telah melampaui batas waktu [150 secondi], il VoIP è stato revocato e il saldo è stato riaggiunto__''')
+    return False 
 
 async def get_code(query, message):
     global idnumero
     global idutente
     print(f'kode yang dibutuhkan oleh {idutente}')
     global numero
-    response = requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=getStatus&id=' + idnumero).text
+    response = requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=getStatus&id={idnumero}'
+    ).text
     if 'STATUS_OK' not in response:
         print(f'STATUS_OK ({idnumero})')
         return False
@@ -339,12 +374,16 @@ async def get_code(query, message):
 
 def done() -> None:
     global idnumero
-    requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=setStatus&status=6&id=' + idnumero)
+    requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=setStatus&status=6&id={idnumero}'
+    )
     print(f'ddddone ({idnumero})')
 
 def banned() -> None:
     global idnumero
-    requests.get('https://api.sms-activate.org/stubs/handler_api.php?api_key=' + phoneAPI + '&action=setStatus&status=8&id=' + idnumero)
+    requests.get(
+        f'https://api.sms-activate.org/stubs/handler_api.php?api_key={phoneAPI}&action=setStatus&status=8&id={idnumero}'
+    )
     print(f'banned ({idnumero})')
 
 
